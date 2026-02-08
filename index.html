@@ -3,227 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LS Code - Редактор кода</title>
+    <title>LS Code - Online Code Editor</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Главное меню проектов -->
-    <div id="projects-screen" class="screen active">
-        <div class="projects-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <span class="logo-text">LS Code</span>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="logo-animation">
+                <span class="logo-text">LS</span>
+                <span class="logo-code">Code</span>
             </div>
-            <p class="tagline">Современный редактор кода в браузере</p>
-        </div>
-        
-        <div class="projects-container">
-            <div class="projects-toolbar">
-                <h2><i class="fas fa-folder-open"></i> Мои проекты</h2>
-                <button id="new-project-btn" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Новый проект
-                </button>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
             </div>
-            
-            <div id="projects-grid" class="projects-grid">
-                <!-- Проекты будут добавлены через JS -->
-            </div>
-            
-            <div id="empty-projects" class="empty-state">
-                <i class="fas fa-folder-plus"></i>
-                <h3>Нет проектов</h3>
-                <p>Создайте свой первый проект, чтобы начать работу</p>
-                <button class="btn btn-primary" onclick="showNewProjectModal()">
-                    <i class="fas fa-plus"></i> Создать проект
-                </button>
-            </div>
+            <p class="loading-text">Загрузка редактора...</p>
         </div>
     </div>
 
-    <!-- Редактор кода -->
-    <div id="editor-screen" class="screen">
-        <!-- Боковая панель -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <button id="back-to-projects" class="btn-icon" title="К проектам">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <span id="project-title" class="project-title">Проект</span>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="section-header">
-                    <span><i class="fas fa-folder"></i> Файлы</span>
-                    <button id="new-file-btn" class="btn-icon-small" title="Новый файл">
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Projects Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <header class="dashboard-header">
+                <div class="logo">
+                    <span class="logo-icon">LS</span>
+                    <span class="logo-name">Code</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="new-project-btn">
                         <i class="fas fa-plus"></i>
+                        Новый проект
                     </button>
                 </div>
-                <div id="file-tree" class="file-tree">
-                    <!-- Файлы будут добавлены через JS -->
+            </header>
+
+            <main class="dashboard-main">
+                <div class="dashboard-welcome">
+                    <h1>Добро пожаловать в LS Code</h1>
+                    <p>Создавайте и редактируйте код прямо в браузере</p>
                 </div>
-            </div>
+
+                <section class="projects-section">
+                    <h2>Ваши проекты</h2>
+                    <div id="projects-grid" class="projects-grid">
+                        <!-- Projects will be dynamically added here -->
+                    </div>
+                    <div id="empty-state" class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>Нет проектов</h3>
+                        <p>Создайте свой первый проект, чтобы начать</p>
+                        <button class="btn btn-primary" id="create-first-project">
+                            <i class="fas fa-plus"></i>
+                            Создать проект
+                        </button>
+                    </div>
+                </section>
+            </main>
         </div>
 
-        <!-- Основная область -->
-        <div class="main-area">
-            <!-- Вкладки файлов -->
-            <div class="tabs-bar">
-                <div id="tabs-container" class="tabs-container">
-                    <!-- Вкладки будут добавлены через JS -->
+        <!-- Editor View -->
+        <div id="editor-view" class="editor-view hidden">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <button class="btn-icon back-btn" id="back-to-dashboard" title="Вернуться к проектам">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <span class="project-name" id="current-project-name">Проект</span>
                 </div>
-                <button id="run-btn" class="btn btn-run" title="Запустить код (Ctrl+Enter)">
-                    <i class="fas fa-play"></i> RUN
-                </button>
-            </div>
 
-            <!-- Редактор -->
-            <div class="editor-container">
-                <div id="editor-welcome" class="editor-welcome">
-                    <div class="welcome-content">
+                <div class="sidebar-actions">
+                    <button class="btn btn-small btn-secondary" id="new-file-btn" title="Новый файл">
+                        <i class="fas fa-file-plus"></i>
+                        Новый файл
+                    </button>
+                </div>
+
+                <div class="file-tree" id="file-tree">
+                    <!-- Files will be dynamically added here -->
+                </div>
+
+                <div class="drop-zone" id="drop-zone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Перетащите файлы сюда</p>
+                </div>
+            </aside>
+
+            <!-- Main Editor Area -->
+            <main class="editor-main">
+                <!-- Tabs -->
+                <div class="tabs-container" id="tabs-container">
+                    <!-- Tabs will be dynamically added here -->
+                </div>
+
+                <!-- Editor -->
+                <div class="editor-container" id="editor-container">
+                    <div class="editor-welcome" id="editor-welcome">
                         <i class="fas fa-code"></i>
                         <h2>LS Code</h2>
-                        <p>Выберите файл или создайте новый для начала работы</p>
-                        <div class="shortcuts">
-                            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>S</kbd> Сохранить</div>
-                            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Запустить</div>
-                            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>N</kbd> Новый файл</div>
-                        </div>
+                        <p>Выберите файл для редактирования или создайте новый</p>
+                    </div>
+                    <textarea id="code-editor" class="code-editor hidden" spellcheck="false"></textarea>
+                    <div id="image-preview" class="image-preview hidden">
+                        <img id="preview-image" src="" alt="Preview">
                     </div>
                 </div>
-                
-                <div id="editor-area" class="editor-area hidden">
-                    <div class="line-numbers" id="line-numbers"></div>
-                    <textarea id="code-editor" class="code-editor" spellcheck="false" placeholder="Введите код здесь..."></textarea>
-                    <div id="drop-zone" class="drop-zone">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Перетащите изображение сюда</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Консоль вывода -->
-            <div id="output-panel" class="output-panel">
+                <!-- Bottom Panel -->
+                <div class="bottom-panel">
+                    <div class="status-bar">
+                        <span class="status-item" id="file-type">Нет файла</span>
+                        <span class="status-item" id="cursor-position">Строка 1, Столбец 1</span>
+                    </div>
+                    <div class="run-actions">
+                        <button class="btn btn-run" id="run-btn" title="Запустить код (Ctrl+Enter)">
+                            <i class="fas fa-play"></i>
+                            RUN
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Output Panel -->
+            <aside class="output-panel hidden" id="output-panel">
                 <div class="output-header">
-                    <span><i class="fas fa-terminal"></i> Консоль</span>
-                    <div class="output-actions">
-                        <button id="clear-output" class="btn-icon-small" title="Очистить">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button id="toggle-output" class="btn-icon-small" title="Свернуть">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
+                    <span>Вывод</span>
+                    <button class="btn-icon" id="close-output">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div id="output-content" class="output-content">
-                    <div class="output-placeholder">
-                        <i class="fas fa-terminal"></i>
-                        <span>Вывод программы появится здесь</span>
-                    </div>
+                <div class="output-content">
+                    <iframe id="output-frame" sandbox="allow-scripts allow-modals"></iframe>
                 </div>
-                <iframe id="html-preview" class="html-preview hidden"></iframe>
-            </div>
+            </aside>
         </div>
     </div>
 
-    <!-- Модальное окно нового проекта -->
-    <div id="new-project-modal" class="modal">
+    <!-- Modals -->
+    <!-- New Project Modal -->
+    <div id="new-project-modal" class="modal hidden">
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-folder-plus"></i> Новый проект</h3>
-                <button class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+                <h2>Создать новый проект</h2>
+                <button class="btn-icon modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label for="project-name">Название проекта</label>
-                    <input type="text" id="project-name" placeholder="Мой проект" autocomplete="off">
+                    <input type="text" id="project-name" placeholder="Мой проект" maxlength="50">
                 </div>
                 <div class="form-group">
                     <label for="project-description">Описание</label>
-                    <textarea id="project-description" placeholder="Краткое описание проекта..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Цвет проекта</label>
-                    <div class="color-picker">
-                        <div class="color-option selected" data-color="#6366f1"></div>
-                        <div class="color-option" data-color="#8b5cf6"></div>
-                        <div class="color-option" data-color="#ec4899"></div>
-                        <div class="color-option" data-color="#ef4444"></div>
-                        <div class="color-option" data-color="#f97316"></div>
-                        <div class="color-option" data-color="#eab308"></div>
-                        <div class="color-option" data-color="#22c55e"></div>
-                        <div class="color-option" data-color="#14b8a6"></div>
-                    </div>
+                    <textarea id="project-description" placeholder="Описание вашего проекта..." maxlength="200"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary modal-close">Отмена</button>
-                <button id="create-project-btn" class="btn btn-primary">Создать</button>
+                <button class="btn btn-secondary modal-cancel">Отмена</button>
+                <button class="btn btn-primary" id="create-project-btn">Создать</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно нового файла -->
-    <div id="new-file-modal" class="modal">
+    <!-- New File Modal -->
+    <div id="new-file-modal" class="modal hidden">
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-file-code"></i> Новый файл</h3>
-                <button class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+                <h2>Создать новый файл</h2>
+                <button class="btn-icon modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label for="file-name">Имя файла</label>
-                    <input type="text" id="file-name" placeholder="index.html" autocomplete="off">
+                    <input type="text" id="file-name" placeholder="index.html">
                 </div>
-                <div class="file-types">
-                    <div class="file-type" data-ext="html">
-                        <i class="fab fa-html5"></i>
-                        <span>HTML</span>
-                    </div>
-                    <div class="file-type" data-ext="css">
-                        <i class="fab fa-css3-alt"></i>
-                        <span>CSS</span>
-                    </div>
-                    <div class="file-type" data-ext="js">
-                        <i class="fab fa-js"></i>
-                        <span>JavaScript</span>
-                    </div>
-                    <div class="file-type" data-ext="py">
-                        <i class="fab fa-python"></i>
-                        <span>Python</span>
-                    </div>
-                    <div class="file-type" data-ext="json">
-                        <i class="fas fa-brackets-curly"></i>
-                        <span>JSON</span>
-                    </div>
-                    <div class="file-type" data-ext="txt">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Text</span>
-                    </div>
-                    <div class="file-type" data-ext="md">
-                        <i class="fab fa-markdown"></i>
-                        <span>Markdown</span>
-                    </div>
-                    <div class="file-type" data-ext="png">
-                        <i class="fas fa-image"></i>
-                        <span>Image</span>
+                <div class="file-templates">
+                    <p>Быстрый выбор:</p>
+                    <div class="template-buttons">
+                        <button class="template-btn" data-template="index.html">
+                            <i class="fab fa-html5"></i>
+                            HTML
+                        </button>
+                        <button class="template-btn" data-template="style.css">
+                            <i class="fab fa-css3-alt"></i>
+                            CSS
+                        </button>
+                        <button class="template-btn" data-template="script.js">
+                            <i class="fab fa-js"></i>
+                            JavaScript
+                        </button>
+                        <button class="template-btn" data-template="main.py">
+                            <i class="fab fa-python"></i>
+                            Python
+                        </button>
+                        <button class="template-btn" data-template="app.ts">
+                            <i class="fas fa-code"></i>
+                            TypeScript
+                        </button>
+                        <button class="template-btn" data-template="data.json">
+                            <i class="fas fa-brackets-curly"></i>
+                            JSON
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary modal-close">Отмена</button>
-                <button id="create-file-btn" class="btn btn-primary">Создать</button>
+                <button class="btn btn-secondary modal-cancel">Отмена</button>
+                <button class="btn btn-primary" id="create-file-btn">Создать</button>
             </div>
         </div>
     </div>
 
-    <!-- Уведомления -->
-    <div id="notifications" class="notifications"></div>
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Подтверждение удаления</h2>
+                <button class="btn-icon modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="delete-message">Вы уверены, что хотите удалить этот элемент?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Отмена</button>
+                <button class="btn btn-danger" id="confirm-delete-btn">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu hidden">
+        <button class="context-item" data-action="rename">
+            <i class="fas fa-pen"></i>
+            Переименовать
+        </button>
+        <button class="context-item" data-action="delete">
+            <i class="fas fa-trash"></i>
+            Удалить
+        </button>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="app.js"></script>
 </body>
