@@ -102,7 +102,10 @@ function App() {
   if (authLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-vscode-bg">
-        <div className="text-vscode-text text-xl">Loading...</div>
+        <div className="text-center">
+          <div className="text-vscode-text text-xl mb-4">Загрузка...</div>
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        </div>
       </div>
     )
   }
