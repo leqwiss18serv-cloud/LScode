@@ -99,7 +99,7 @@ npm install
 
    -- Create profiles table
    CREATE TABLE IF NOT EXISTS profiles (
-     id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
      email TEXT UNIQUE NOT NULL,
      full_name TEXT,
      avatar_url TEXT,
